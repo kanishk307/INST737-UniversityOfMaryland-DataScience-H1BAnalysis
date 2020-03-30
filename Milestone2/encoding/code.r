@@ -5,20 +5,20 @@ columns<-names(dataset)
 
 df <- data.frame(dataset)
 
-randomsample=sample_n(df, 100000)
+#randomsample=sample_n(df, 100000)
 
 
-write.csv(randomsample,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMaryland-DataScience-H1BAnalysis\\Milestone2\\encoding\\sample.csv")
+#write.csv(randomsample,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMaryland-DataScience-H1BAnalysis\\Milestone2\\encoding\\sample.csv")
 
-smp_size <- floor(0.80 * nrow(randomsample))
+smp_size <- floor(0.80 * nrow(df))
 
 
 set.seed(123)
 
-train_generator <- sample(seq_len(nrow(randomsample)),size=smp_size)
+train_generator <- sample(seq_len(nrow(df)),size=smp_size)
 
-train <- randomsample[train_generator,]
-test<- randomsample[-train_generator,]
+train <- df[train_generator,]
+test<- df[-train_generator,]
 
 write.csv(train,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMaryland-DataScience-H1BAnalysis\\Milestone2\\encoding\\train.csv")
 
@@ -36,19 +36,23 @@ write.csv(test,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMary
 
 
 
-dataset$AGENT_PRESENT <- as.factor(dataset$AGENT_PRESENT)
-dataset$CASE_STATUS <- as.factor(dataset$CASE_STATUS)
-dataset$WILLFUL_VIOLATOR <- as.factor(dataset$WILLFUL_VIOLATOR)
-dataset$EMPLOYER_STATE <- as.factor(dataset$EMPLOYER_STATE)
-dataset$WORKSITE_STATE <- as.factor(dataset$WORKSITE_STATE)
+df$AGENT_PRESENT <- as.factor(df$AGENT_PRESENT)
+df$CASE_STATUS <- as.factor(df$CASE_STATUS)
+df$WILLFUL_VIOLATOR <- as.factor(df$WILLFUL_VIOLATOR)
+df$EMPLOYER_STATE <- as.factor(df$EMPLOYER_STATE)
+df$WORKSITE_STATE <- as.factor(df$WORKSITE_STATE)
 
 
-dataset1<-subset(dataset,dataset$HOURLY_WAGE<100 & dataset$WAGE_RATE_OF_PAY_FROM_HOUR<100 & dataset$DURATION < 90)
+df1<-subset(df,df$HOURLY_WAGE<100 & df$WAGE_RATE_OF_PAY_FROM_HOUR<100 & df$DURATION < 90)
 
-df1<-data.frame(dataset1)
+randomsample=sample_n(df1, 10000)
 
-attach(df1)
-modelAP = lm(DURATION~AGENT_PRESENT)
+randomsample_onehot <- one_hot(as.data.table(randomsample))
+
+#df1<-data.frame(dataset1)
+
+#attach(df1)
+modelAP = lm(df$DURATION~df$AGENT_PRESENT)
 
 summary(modelAP)
 
