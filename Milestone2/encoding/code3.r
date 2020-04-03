@@ -26,7 +26,7 @@ df$CASE_STATUS_1.0 <- as.factor(df$CASE_STATUS_1.0)
 smp_size <- floor(0.80 * nrow(df))
 
 
-set.seed(123)
+set.seed(2)
 
 train_generator <- sample(seq_len(nrow(df)),size=smp_size)
 
@@ -53,10 +53,13 @@ summary(modelCS)
 
 modelWFH <- lm(train$HOURLY_WAGE~train$WAGE_RATE_OF_PAY_FROM_HOUR)
 summary(modelWFH)
-
+smModelWFH <- summary(modelWFH)
+mean(smModelWFH$residuals^2)
+#predictionWFH <- predict(modelWFH,newdata=test)
+#cor(predictionWFH,test$HOURLY_WAGE)
 
 fit = data.frame(train,fitted.value=fitted(modelWFH),residual=resid(modelWFH))
-View(fit)
+#View(fit)
 pc<-predict(modelWFH,int="c",newdata=fit)
 pp<-predict(modelWFH,int="p",newdata=fit)
 #plot(fit$WAGE_RATE_OF_PAY_FROM_HOUR,fit$HOURLY_WAGE)
@@ -83,3 +86,27 @@ modelMul2 <- lm(HOURLY_WAGE~.,data=train)
 prediction <- predict(modelMul2,newdata=test)
 cor(prediction,test$HOURLY_WAGE)
 
+smModelMul2 <- summary(modelMul2)
+mean(smModelMul2$residuals^2)
+smModelMul2
+
+
+library(glmnet)
+cv.fit <- cv.glmnet(as.matrix(train[,c(-2,-3,-5,-6,-7,-8,-9,-10)]),as.vector(train[,3]),alpha=1)
+plot(cv.fit)
+coef(cv.fit)
+cv.fit$lambda.min
+
+prediction2 <- predict(cv.fit,newx=as.matrix(test[,c(-1,-2,-3,-5,-6,-7,-8,-9,-10)]))
+cor(prediction,as.vector(test[,3]))
+
+
+"
+cv.fit <- cv.glmnet(as.matrix(train[,c(-3,-5,-6,-7,-8,-9,-10)]),as.vector(train[,3]),alpha=1)
+plot(cv.fit)
+coef(cv.fit)
+cv.fit$lambda.min
+
+prediction2 <- predict(cv.fit,newx=as.matrix(test[,c(-3,-5,-6,-7,-8,-9,-10)]))
+cor(prediction,as.vector(test[,3]))
+"
