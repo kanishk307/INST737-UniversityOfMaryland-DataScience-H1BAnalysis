@@ -18,7 +18,7 @@ library(dplyr)
 #library(kernlab)
 
 #Creating Train and test data randomly
-randomsample=sample_n(df, 100000)
+randomsample=sample_n(df, 5000)
 #write.csv(randomsample,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMaryland-DataScience-H1BAnalysis\\Milestone2\\encoding\\sample.csv")
 smp_size <- floor(0.80 * nrow(randomsample))
 set.seed(123)
@@ -43,10 +43,13 @@ test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 library(caret)
 
+#K-Fold 5 Folds
 train_control <- trainControl(method="cv",number=5)
+#Model Naive Bayes
 modelAgentPresentNaiveBayes <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="nb")
 predAgentPresentNaiveBayes <- predict(modelAgentPresentNaiveBayes,test[,1:6])
 length(predAgentPresentNaiveBayes)
+#Accuracy Check
 confusionMatrix(predAgentPresentNaiveBayes,test$AGENT_PRESENT_1.0)
 
 

@@ -34,7 +34,7 @@ test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 
 #Building the model
-modelBinaryNonLinearAgentPresent<- ksvm(AGENT_PRESENT_1.0~DURATION+WAGE_RATE_OF_PAY_FROM_HOUR+HOURLY_WAGE+OCCUPATION,data=train,kernel="rbfdot")
+modelBinaryNonLinearAgentPresent<- ksvm(AGENT_PRESENT_1.0~DURATION+WAGE_RATE_OF_PAY_FROM_HOUR+HOURLY_WAGE+OCCUPATION+CASE_STATUS_1.0,data=train,kernel="rbfdot")
 
 #Getting summary of the model
 summary(modelBinaryNonLinearAgentPresent)
@@ -48,3 +48,4 @@ tab
 agreement <- pred==test$AGENT_PRESENT_1.0
 tabag <- table(agreement)
 tabag
+ ``

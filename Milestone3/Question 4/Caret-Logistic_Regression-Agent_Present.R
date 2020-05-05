@@ -15,7 +15,7 @@ df <- df[, col_order]
 
 #installing packages
 library(dplyr)
-library(kernlab)
+#library(kernlab)
 
 #Creating Train and test data randomly
 randomsample=sample_n(df, 100000)
@@ -37,7 +37,7 @@ test$AGENT_PRESENT_1.0<-as.factor(test$AGENT_PRESENT_1.0)
 test$HOURLY_WAGE<-as.numeric(test$HOURLY_WAGE)
 test$WAGE_RATE_OF_PAY_FROM_HOUR<-as.numeric(test$WAGE_RATE_OF_PAY_FROM_HOUR)
 test$DURATION<-as.numeric(test$DURATION)
-
+test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 
 

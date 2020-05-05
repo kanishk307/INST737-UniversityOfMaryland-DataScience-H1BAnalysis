@@ -18,7 +18,7 @@ library(dplyr)
 #library(kernlab)
 
 #Creating Train and test data randomly
-randomsample=sample_n(df, 100000)
+randomsample=sample_n(df, 5000)
 #write.csv(randomsample,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMaryland-DataScience-H1BAnalysis\\Milestone2\\encoding\\sample.csv")
 smp_size <- floor(0.80 * nrow(randomsample))
 set.seed(123)
@@ -43,37 +43,38 @@ test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 library(caret)
 
+#K-Fold with 5 folds
 train_control <- trainControl(method="cv",number=5)
-modelAgentPresentNaiveBayes <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="nb")
-predAgentPresentNaiveBayes <- predict(modelAgentPresentNaiveBayes,test[,1:6])
-length(predAgentPresentNaiveBayes)
-confusionMatrix(predAgentPresentNaiveBayes,test$AGENT_PRESENT_1.0)
+#Logistic Regression Model
+modelAgentPresentLogistic <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="glm",family="binomial")
+predAgentPresentLogistic <- predict(modelAgentPresentLogistic,test[,1:6])
+length(predAgentPresentLogistic)
+#Accuracy Check
+confusionMatrix(predAgentPresentLogistic,test$AGENT_PRESENT_1.0)
 
 
 
-# Confusion Matrix and Statistics
-# 
 # Reference
-# Prediction    0    1
-# 0 2886 2765
-# 1 4671 9678
+# Prediction     0     1
+# 0   362   717
+# 1  7107 11814
 # 
-# Accuracy : 0.6282          
-# 95% CI : (0.6215, 0.6349)
-# No Information Rate : 0.6222          
-# P-Value [Acc > NIR] : 0.03932         
+# Accuracy : 0.6088         
+# 95% CI : (0.602, 0.6156)
+# No Information Rate : 0.6266         
+# P-Value [Acc > NIR] : 1              
 # 
-# Kappa : 0.168           
+# Kappa : -0.0106        
 # 
-# Mcnemar's Test P-Value : < 2e-16         
-#                                           
-#             Sensitivity : 0.3819          
-#             Specificity : 0.7778          
-#          Pos Pred Value : 0.5107          
-#          Neg Pred Value : 0.6745          
-#              Prevalence : 0.3779          
-#          Detection Rate : 0.1443          
-#    Detection Prevalence : 0.2826          
-#       Balanced Accuracy : 0.5798          
-#                                           
-#       'Positive' Class : 0 
+# Mcnemar's Test P-Value : <2e-16         
+#                                          
+#             Sensitivity : 0.04847        
+#             Specificity : 0.94278        
+#          Pos Pred Value : 0.33550        
+#          Neg Pred Value : 0.62439        
+#              Prevalence : 0.37345        
+#          Detection Rate : 0.01810        
+#    Detection Prevalence : 0.05395        
+#       Balanced Accuracy : 0.49562        
+#                                          
+#        'Positive' Class : 0

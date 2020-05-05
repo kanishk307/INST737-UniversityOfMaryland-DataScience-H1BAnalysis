@@ -18,7 +18,7 @@ library(dplyr)
 #library(kernlab)
 
 #Creating Train and test data randomly
-randomsample=sample_n(df, 100000)
+randomsample=sample_n(df, 10000)
 #write.csv(randomsample,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMaryland-DataScience-H1BAnalysis\\Milestone2\\encoding\\sample.csv")
 smp_size <- floor(0.80 * nrow(randomsample))
 set.seed(123)
@@ -42,38 +42,38 @@ test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 
 library(caret)
-
-train_control <- trainControl(method="cv",number=5)
-modelAgentPresentNaiveBayes <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="nb")
-predAgentPresentNaiveBayes <- predict(modelAgentPresentNaiveBayes,test[,1:6])
-length(predAgentPresentNaiveBayes)
-confusionMatrix(predAgentPresentNaiveBayes,test$AGENT_PRESENT_1.0)
-
-
+#LGOCV
+train_control <- trainControl(method="LGOCV",number=5)
+#Model Decision Tree
+modelAgentPresentDecisionTree <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="rpart")
+predAgentPresentDecisionTree <- predict(modelAgentPresentDecisionTree,test[,1:6])
+length(predAgentPresentDecisionTree)
+#Accuracy check
+confusionMatrix(predAgentPresentDecisionTree,test$AGENT_PRESENT_1.0)
 
 # Confusion Matrix and Statistics
 # 
 # Reference
 # Prediction    0    1
-# 0 2886 2765
-# 1 4671 9678
+# 0  277  226
+# 1  469 1028
 # 
-# Accuracy : 0.6282          
-# 95% CI : (0.6215, 0.6349)
-# No Information Rate : 0.6222          
-# P-Value [Acc > NIR] : 0.03932         
+# Accuracy : 0.6525          
+# 95% CI : (0.6312, 0.6734)
+# No Information Rate : 0.627           
+# P-Value [Acc > NIR] : 0.009532        
 # 
-# Kappa : 0.168           
+# Kappa : 0.2046          
 # 
-# Mcnemar's Test P-Value : < 2e-16         
+# Mcnemar's Test P-Value : < 2.2e-16       
 #                                           
-#             Sensitivity : 0.3819          
-#             Specificity : 0.7778          
-#          Pos Pred Value : 0.5107          
-#          Neg Pred Value : 0.6745          
-#              Prevalence : 0.3779          
-#          Detection Rate : 0.1443          
-#    Detection Prevalence : 0.2826          
-#       Balanced Accuracy : 0.5798          
+#             Sensitivity : 0.3713          
+#             Specificity : 0.8198          
+#          Pos Pred Value : 0.5507          
+#          Neg Pred Value : 0.6867          
+#              Prevalence : 0.3730          
+#          Detection Rate : 0.1385          
+#    Detection Prevalence : 0.2515          
+#       Balanced Accuracy : 0.5955          
 #                                           
-#       'Positive' Class : 0 
+       # 'Positive' Class : 0     

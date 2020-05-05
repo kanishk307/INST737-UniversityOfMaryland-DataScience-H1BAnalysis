@@ -18,7 +18,7 @@ library(dplyr)
 #library(kernlab)
 
 #Creating Train and test data randomly
-randomsample=sample_n(df, 100000)
+randomsample=sample_n(df, 10000)
 #write.csv(randomsample,"C:\\Users\\kjain307\\Documents\\GitHub\\INST737-UniversityOfMaryland-DataScience-H1BAnalysis\\Milestone2\\encoding\\sample.csv")
 smp_size <- floor(0.80 * nrow(randomsample))
 set.seed(123)
@@ -43,37 +43,38 @@ test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 library(caret)
 
-train_control <- trainControl(method="cv",number=5)
+#boot
+train_control <- trainControl(method="boot")
+#Model Naive Bayes
 modelAgentPresentNaiveBayes <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="nb")
 predAgentPresentNaiveBayes <- predict(modelAgentPresentNaiveBayes,test[,1:6])
 length(predAgentPresentNaiveBayes)
+#Accuracy Check
 confusionMatrix(predAgentPresentNaiveBayes,test$AGENT_PRESENT_1.0)
 
 
-
-# Confusion Matrix and Statistics
-# 
 # Reference
-# Prediction    0    1
-# 0 2886 2765
-# 1 4671 9678
+# Prediction   0   1
+# 0 344 297
+# 1 462 897
 # 
-# Accuracy : 0.6282          
-# 95% CI : (0.6215, 0.6349)
-# No Information Rate : 0.6222          
-# P-Value [Acc > NIR] : 0.03932         
+# Accuracy : 0.6205          
+# 95% CI : (0.5988, 0.6418)
+# No Information Rate : 0.597           
+# P-Value [Acc > NIR] : 0.01678         
 # 
-# Kappa : 0.168           
+# Kappa : 0.1842          
 # 
-# Mcnemar's Test P-Value : < 2e-16         
+# Mcnemar's Test P-Value : 2.636e-09       
 #                                           
-#             Sensitivity : 0.3819          
-#             Specificity : 0.7778          
-#          Pos Pred Value : 0.5107          
-#          Neg Pred Value : 0.6745          
-#              Prevalence : 0.3779          
-#          Detection Rate : 0.1443          
-#    Detection Prevalence : 0.2826          
-#       Balanced Accuracy : 0.5798          
+#             Sensitivity : 0.4268          
+#             Specificity : 0.7513          
+#          Pos Pred Value : 0.5367          
+#          Neg Pred Value : 0.6600          
+#              Prevalence : 0.4030          
+#          Detection Rate : 0.1720          
+#    Detection Prevalence : 0.3205          
+#       Balanced Accuracy : 0.5890          
 #                                           
-#       'Positive' Class : 0 
+#        'Positive' Class : 0     
+

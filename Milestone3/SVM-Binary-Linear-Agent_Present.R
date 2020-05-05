@@ -34,7 +34,7 @@ test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 
 #Building the model
-modelBinaryLinearAgentPresent<- ksvm(AGENT_PRESENT_1.0~DURATION+WAGE_RATE_OF_PAY_FROM_HOUR+HOURLY_WAGE+OCCUPATION,data=train,kernel="vanilladot")
+modelBinaryLinearAgentPresent<- ksvm(AGENT_PRESENT_1.0~DURATION+WAGE_RATE_OF_PAY_FROM_HOUR+HOURLY_WAGE+OCCUPATION+CASE_STATUS_1.0,data=train,kernel="vanilladot")
 #Getting summary of the model
 summary(modelBinaryLinearAgentPresent)
 #Prediction of test data

@@ -42,38 +42,37 @@ test$CASE_STATUS_1.0<-as.factor(test$CASE_STATUS_1.0)
 
 
 library(caret)
-
+#K Fold 5 Folds
 train_control <- trainControl(method="cv",number=5)
-modelAgentPresentNaiveBayes <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="nb")
-predAgentPresentNaiveBayes <- predict(modelAgentPresentNaiveBayes,test[,1:6])
-length(predAgentPresentNaiveBayes)
-confusionMatrix(predAgentPresentNaiveBayes,test$AGENT_PRESENT_1.0)
-
-
+#Model Decision Tree
+modelAgentPresentDecisionTree <- train(AGENT_PRESENT_1.0~HOURLY_WAGE+WAGE_RATE_OF_PAY_FROM_HOUR+DURATION,data=train,trControl=train_control,method="rpart")
+predAgentPresentDecisionTree <- predict(modelAgentPresentDecisionTree,test[,1:6])
+length(predAgentPresentDecisionTree)
+#Accuracy check
+confusionMatrix(predAgentPresentDecisionTree,test$AGENT_PRESENT_1.0)
 
 # Confusion Matrix and Statistics
 # 
 # Reference
 # Prediction    0    1
-# 0 2886 2765
-# 1 4671 9678
+# 0  430  423
+# 1 1007 2140
 # 
-# Accuracy : 0.6282          
-# 95% CI : (0.6215, 0.6349)
-# No Information Rate : 0.6222          
-# P-Value [Acc > NIR] : 0.03932         
+# Accuracy : 0.6425          
+# 95% CI : (0.6274, 0.6574)
+# No Information Rate : 0.6408          
+# P-Value [Acc > NIR] : 0.4158          
 # 
-# Kappa : 0.168           
+# Kappa : 0.1473          
 # 
-# Mcnemar's Test P-Value : < 2e-16         
+# Mcnemar's Test P-Value : <2e-16          
 #                                           
-#             Sensitivity : 0.3819          
-#             Specificity : 0.7778          
-#          Pos Pred Value : 0.5107          
-#          Neg Pred Value : 0.6745          
-#              Prevalence : 0.3779          
-#          Detection Rate : 0.1443          
-#    Detection Prevalence : 0.2826          
-#       Balanced Accuracy : 0.5798          
-#                                           
-#       'Positive' Class : 0 
+#             Sensitivity : 0.2992          
+#             Specificity : 0.8350          
+#          Pos Pred Value : 0.5041          
+#          Neg Pred Value : 0.6800          
+#              Prevalence : 0.3593          
+#          Detection Rate : 0.1075          
+#    Detection Prevalence : 0.2132          
+#       Balanced Accuracy : 0.5671   
+# 
