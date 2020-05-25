@@ -1,0 +1,113 @@
+#setting up the data
+setwd("/Users/gauravhasija/Desktop/inst737")
+dataset<-read.csv('oneHot_withCATEGORY2MaY.csv')
+columns<-names(dataset)
+#attach(dataset)
+
+str(dataset)
+
+#Aligning the data
+#dataset$CASE_STATUS_1.0 <- as.factor(dataset$CASE_STATUS_1.0)
+#dataset$AGENT_PRESENT_1.0 <- as.factor(dataset$AGENT_PRESENT_1.0)
+dataset$OCCUPATION <- as.factor(dataset$OCCUPATION)
+dataset$OCCUPATION_NUM <- as.integer(dataset$OCCUPATION)
+dataset$X.1 <- NULL
+dataset$X <- NULL
+dataset$WILLFUL_VIOLATOR <- NULL
+dataset$AGENT_PRESENT_0.0 <- NULL
+dataset$CASE_STATUS_0.0 <- NULL
+dataset$WAGE_RATE_OF_PAY_FROM_HOUR_RANGE <- NULL
+dataset$DURATION_RANGE <- NULL
+dataset$HOURLY_WAGE_RANGE <- NULL
+dataset$OCCUPATION <- NULL
+
+#min_max normalization
+
+
+dataset$DURATION <- (dataset$DURATION - min(dataset$DURATION))/(max(dataset$DURATION) - min(dataset$DURATION))
+
+dataset$HOURLY_WAGE <- (dataset$HOURLY_WAGE - min(dataset$HOURLY_WAGE))/(max(dataset$HOURLY_WAGE) - min(dataset$HOURLY_WAGE))
+
+dataset$WAGE_RATE_OF_PAY_FROM_HOUR <- (dataset$WAGE_RATE_OF_PAY_FROM_HOUR - min(dataset$WAGE_RATE_OF_PAY_FROM_HOUR))/(max(dataset$WAGE_RATE_OF_PAY_FROM_HOUR) - min(dataset$WAGE_RATE_OF_PAY_FROM_HOUR))
+
+dataset$OCCUPATION_NUM <- (dataset$OCCUPATION_NUM - min(dataset$OCCUPATION_NUM))/(max(dataset$OCCUPATION_NUM) - min(dataset$OCCUPATION_NUM))
+
+str(dataset)
+
+
+
+
+
+
+#randomization and creation of train and test data set
+
+
+randomsample=sample_n(dataset, 1000)
+str(randomsample)
+smp_size <- floor(0.70 * nrow(randomsample))
+
+
+set.seed(123)
+
+train_generator <- sample(seq_len(nrow(randomsample)),size=smp_size)
+
+train <- randomsample[train_generator,]
+test<- randomsample[-train_generator,]
+
+
+#CV with Kfold
+train_control=trainControl(method = "cv",number=5)
+
+
+model<-train(HOURLY_WAGE~DURATION+
+               AGENT_PRESENT_1.0+
+               WAGE_RATE_OF_PAY_FROM_HOUR+
+               CASE_STATUS_1.0+
+               OCCUPATION_NUM,
+             data=train,trControl=train_control,method="neuralnet")
+
+
+pdu <- predict(model,test[,-2] )
+cor(pdu,test$DURATION)
+
+# > pdu <- predict(model,test[,-2] )
+# > cor(pdu,test$DURATION)
+# [1] 0.04352978
+
+
+#CV with boot
+train_control=trainControl(method = "boot")
+
+
+model<-train(HOURLY_WAGE~DURATION+
+               AGENT_PRESENT_1.0+
+               WAGE_RATE_OF_PAY_FROM_HOUR+
+               CASE_STATUS_1.0+
+               OCCUPATION_NUM,
+             data=train,trControl=train_control,method="neuralnet")
+
+
+pdu <- predict(model,test[,-2] )
+cor(pdu,test$DURATION)
+
+# > pdu <- predict(model,test[,-2] )
+# > cor(pdu,test$DURATION)
+# [1] 0.1027823
+
+
+#CV with LGOCV
+train_control=trainControl(method = "LGOCV")
+
+model<-train(HOURLY_WAGE~DURATION+
+               AGENT_PRESENT_1.0+
+               WAGE_RATE_OF_PAY_FROM_HOUR+
+               CASE_STATUS_1.0+
+               OCCUPATION_NUM,
+             data=train,trControl=train_control,method="neuralnet")
+
+
+pdu <- predict(model,test[,-2] )
+cor(pdu,test$DURATION)
+# > pdu <- predict(model,test[,-2] )
+# > cor(pdu,test$DURATION)
+# [1] 0.07363923
